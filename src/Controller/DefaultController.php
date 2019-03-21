@@ -10,6 +10,7 @@ namespace App\Controller;
 
 use GuzzleHttp\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends AbstractController
@@ -17,10 +18,27 @@ class DefaultController extends AbstractController
     /**
      * @Route("/")
      */
-    public function getValue()
+    public function getValue(Request $request)
     {
         $client = new Client(['base_uri' => 'http://api.nbp.pl/api/exchangerates/']);
-        $response = $client->request('GET', 'tables/a/?format=json');
+        if ($request->get('trip-start')!== null) {
+            $date = $request->get('trip-start');
+            try {
+                $response = $client->request('GET', 'tables/a/' . $date . '/?format=json');
+            } catch (\Exception $e) {
+                return $this->render("error.html.twig", [
+                    "error" => ("Nie poprawny paramter   ". $e->getMessage())
+                ]);
+            }
+        } else {
+            try {
+                $response = $client->request('GET', 'tables/a/?format=json');
+            } catch (\Exception $e) {
+                return $this->render("error.html.twig", [
+                    "error" => ("Nie poprawny paramter   ". $e->getMessage())
+                ]);
+            }
+        }
 
         $data = $response->getBody();
         $data = json_decode($data, true);
