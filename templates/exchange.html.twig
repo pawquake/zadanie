@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <h1>Lista</h1>
+    <p>{{ date }}</p>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Currency</th>
+                <th>Code</th>
+                <th>Mid</th>
+            </tr>
+            </thead>
+            <tbody>
+        {% for key,rate in rates %}
+            <tr>
+                <th scope="row">{{ key }}</th>
+                <td>{{ rate.currency }} </td>
+                <td> {{ rate.code }}</td>
+                <td>{{ rate.mid }}</td>
+            </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+{% endblock %}
